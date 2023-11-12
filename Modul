@@ -115,7 +115,7 @@ class Modul {
 	
 	public function Bn(){
 		system("clear");
-		$zone = TimeZone();
+		$zone = $this->TimeZone();
 		$tanggal = Date("d-M-Y");
 		$waktu = Date("H:i:s");
 		$panjang = 50-strlen($zone.$tanggal.$waktu);
@@ -125,11 +125,11 @@ class Modul {
 			$lokasi .= " ";
 		}
 		print $lokasi.n;
-		print Line();
-		Acssi_calvin(title);
+		print $this->Line();
+		$this->Acssi_calvin(title);
 		print mp.str_pad("FREE SCRIPT! NOT FOR SALE",50," ",STR_PAD_BOTH).d."\n";
 		print pm.str_pad("© Copyright IEWIL OFFICIAL 2023",50," ",STR_PAD_BOTH)." ".d."\n";
-		print Line();
+		print $this->Line();
 	}
 	public function Line(){
 		return p.str_repeat('─',50).n;
