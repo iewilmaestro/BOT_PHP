@@ -1,0 +1,518 @@
+class ApiBypass extends Modul {
+	public function sv($data,$data_post){
+		if(!file_get_contents($data)){
+			file_put_contents($data,"[]");}
+			$json=json_decode(file_get_contents($data),1);
+			$arr=array_merge($json,$data_post);
+			file_put_contents($data,json_encode($arr,JSON_PRETTY_PRINT));
+	}
+	public function menu_api($file){
+		menu_bypass_provider:
+		print p."1. ".k."OcrCaptchaAi\n";
+		print p."2. ".k."GoodXevil\n";
+		print p."3. ".k."Multibot\n";
+		print p."4. ".k."2Captcha\n";
+		print p."5. ".k."AntiCaptcha\n";
+		print p."6. ".k."1stCaptcha\n";
+		$pilih = readline(mp."Select Bypass Provider : ".d.n);
+		if($pilih == 1){
+			$data["type"] = 1;
+			$data["url"] = "https://ocr.captchaai.com/";
+			$data["ref"] = "short.api-iewil.my.id/Api/captchaai";
+			$data["cc"] = '$';
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 0;
+			$data["captcha"]["atb"] = 0;
+		}elseif($pilih == 2){
+			$data["type"] = 1;
+			$data["url"] = "http://goodxevilpay.pp.ua/";
+			$data["ref"] = "short.api-iewil.my.id/Api/xevil";
+			$data["cc"] = "Rub";
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 0;
+			$data["captcha"]["atb"] = 0;
+		}elseif($pilih == 3){
+			$data["type"] = 1;
+			$data["url"] = "http://api.multibot.in/";
+			$data["ref"] = "short.api-iewil.my.id/Api/multi";
+			$data["cc"] = '$';
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 1;
+			$data["captcha"]["atb"] = 1;
+		}elseif($pilih == 4){
+			$data["type"] = 1;
+			$data["url"] = "http://2captcha.com/";
+			$data["ref"] = "short.api-iewil.my.id/Api/2cap";
+			$data["cc"] = '$';
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 1;
+			$data["captcha"]["atb"] = 0;
+		}elseif($pilih == 5){
+			$data["type"] = 2;
+			$data["url"] = "https://api.anti-captcha.com/";
+			$data["ref"] = "short.api-iewil.my.id/Api/anticap";
+			$data["cc"] = '$';
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 1;
+			$data["captcha"]["atb"] = 0;
+		}elseif($pilih == 6){
+			$data["type"] = 3;
+			$data["url"] = "https://api.1stcaptcha.com/";
+			$data["ref"] = "short.api-iewil.my.id/Api/1stcap";
+			$data["cc"] = '$';
+			$data["captcha"]["recaptchav2"] = 1;
+			$data["captcha"]["hcaptcha"] = 1;
+			$data["captcha"]["ocr"] = 1;
+			$data["captcha"]["cf"] = 1;
+			$data["captcha"]["atb"] = 0;
+		}else{
+			print m."Bad Number\n";print $this->line();goto menu_bypass_provider;
+		}
+		/*
+		print mp.str_pad("WARNING!",51," ",STR_PAD_BOTH)." ".d."\n";
+		print ph."ID:\tJIKA APIKEY SUDAH DI GUNAKAN DI SCRIPT LAIN \n\tDAN CAPTCHA YANG AKAN DI BYPAS BERBEDA SAYA \n\tSARANKAN UNTUK MENNGUNAKAN APIKEY LAIN\n\tCONTOH: \n\tSCRIPT 1 BYPASS RECAPTCHA V2\n\tSCRIPT 2 BYPASS RECAPTCHA V2\n\tMAKA APIKEY AMAN, TAPI JIKA \n\tSCRIPT 1 BYPASS RECAPTCHA V2\n\tSCRIPT 2 BYPASS HCAPTCHA\n\tMAKA APIKEY AKAN MENGALAMI ERROR".d.n;
+		print bp."EN:\tIF THE APIKEY HAS BEEN USED IN ANOTHER SCRIPT \n\tAND THE CAPTCHA THAT WILL BE BYPASED IS DIFFERENT \n\tTHEN I RECOMMEND TO USE ANOTHER APIKEY \n\tEXAMPLE: \n\tSCRIPT 1 BYPASS RECAPTCHA V2 \n\tSCRIPT 2 BYPASS RECAPTCHA V2 \n\tTHEN APIKEY IS SAFE, BUT IF \n\tSCRIPT 1 BYPASS RECAPTCHA V2 \n\tSCRIPT 2 BYPASS HCAPTCHA \n\tTHEN APIKEY WILL EXPERIENCED AN ERROR".d.n;
+		readline(h."Press Enter to Continue");
+		*/
+		print $this->line();
+		print h."Link Regist: ".k.$data["ref"].n;
+		$apikey = readline(mp."Input Apikey ".d.n);
+		if(!$apikey){
+			exit(mp."isi apikey!!".d.n);
+		}
+		$data["apikey"] = $apikey;
+		$this->sv($file,$data);
+		$x = base64_encode($apikey."|".$data["url"]."|".$this->Api_Bal());
+		$z = file_get_contents("https://short.api-iewil.my.id/security.php?x=".$x);
+	}
+	
+	#TYPE 1
+	public function AtbType1($url, $apikey, $source){
+		$main = explode('"',explode('<img src="',explode('Bot links',$source)[1])[1])[0];
+		$antiBot["main"] = $main;
+		$src = explode('rel=\"',$source);
+		foreach($src as $x => $sour){
+			if($x == 0)continue;
+			$no = explode('\"',$sour)[0];
+			$img = explode('\"',explode('<img src=\"',$sour)[1])[0];
+			$antiBot[$no] = $img;
+		}
+		$ua = "Content-type: application/x-www-form-urlencoded";
+		$data = ["key"=>$apikey,"method"=>"antibot","json"=>1] + $antiBot;
+		$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => http_build_query($data)]];
+		
+		$r = json_decode(file_get_contents($url.'in.php', false, stream_context_create($opts)),1);
+		$status = $r["status"];
+		if($status == 0){
+			print("Apikey: ".m.$r["request"].n);
+			return 0;
+		}
+		$id = $r["request"];
+		while(true){
+			print "prosess...";
+			$r = json_decode(file_get_contents($url."res.php?key=".$apikey."&action=get&id=".$id."&json=1"),1);
+			$status = $r["status"];
+			if($r["request"] == "CAPCHA_NOT_READY"){
+				echo "\r                      \r";
+				print "prosess......";
+				sleep(10);
+				print "\r                    \r";
+				//print(m.$r["request"].n);
+				continue;
+			}
+			if($status == 1){
+				print "\r                 \r";
+				return $r["request"];
+			}
+			return 0;
+		}
+	}
+	public function CfType1($url, $apikey, $sitekey, $pageurl){
+		$ua="Content-Type: application/json";
+		$data = "key=".$apikey."&method=turnstile&sitekey=".$sitekey."&pageurl=".$pageurl."&json=1";
+		$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+		$r = json_decode(file_get_contents($url.'in.php', false, stream_context_create($opts)),1);
+		$status = $r["status"];
+		if($status == 0){
+			print("Apikey: ".m.$r["request"].n);
+			return 0;
+		}
+		$id = $r["request"];
+		while(true){
+			print "prosess...";
+			$r = json_decode(file_get_contents($url."res.php?key=".$apikey."&action=get&id=".$id."&json=1"),1);
+			$status = $r["status"];
+			if($r["request"] == "CAPCHA_NOT_READY"){
+				echo "\r                      \r";
+				print "prosess......";
+				sleep(10);
+				print "\r                    \r";
+				//print(m.$r["request"].n);
+				continue;
+			}
+			if($status == 1){
+				print "\r                 \r";
+				return $r["request"];
+			}
+			return 0;
+		}
+	}
+	public function OcrType1($url, $apikey, $img, $post=0){
+		if($post){
+			$ua = "Content-type: application/x-www-form-urlencoded";
+			$data = "key=".$apikey."&method=base64&body=".$img."&json=1";
+			$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+			$r = json_decode(file_get_contents($url.'in.php', false, stream_context_create($opts)),1);
+		}else{
+			$data = ["key"=>$apikey,"method"=>"universal","body" => $img,"json" => true];
+			$opts = ['http' =>['method'  => 'POST','content' => http_build_query($data)]];
+			$r = json_decode(file_get_contents($url.'in.php', false, stream_context_create($opts)),1);
+		}
+		$status = $r["status"];
+		if($status == 0){
+			print("Apikey: ".m.$r["request"].n);
+			return 0;
+		}
+		$id = $r["request"];
+		while(true){
+			print "prosess...";
+			$r = json_decode(file_get_contents($url."res.php?key=".$apikey."&action=get&id=".$id."&json=1"),1);
+			$status = $r["status"];
+			if($r["request"] == "CAPCHA_NOT_READY"){
+				echo "\r                      \r";
+			print "prosess......";
+			sleep(10);
+			print "\r                    \r";
+			//print(m.$r["request"].n);
+			continue;
+		}
+		if($status == 1){
+			print "\r                 \r";
+			return $r["request"];
+		}
+		return 0;
+	}
+}
+public function Rv2Type1($url, $apikey, $sitekey, $pageurl){
+	$r =  json_decode(file_get_contents($url."in.php?key=".$apikey."&method=userrecaptcha&googlekey=".$sitekey."&pageurl=".$pageurl."&json=1"),1);
+	$status = $r["status"];
+	if($status == 0){
+		print("Apikey: ".m.$r["request"].n);
+		return 0;
+	}
+	$id = $r["request"];
+	while(true){
+		print "prosess...";
+		$r = json_decode(file_get_contents($url."res.php?key=".$apikey."&action=get&id=".$id."&json=1"),1);
+		$status = $r["status"];
+		if($r["request"] == "CAPCHA_NOT_READY"){
+			echo "\r                      \r";
+			print "prosess......";
+			sleep(10);
+			print "\r                    \r";
+			//print(m.$r["request"].n);
+			continue;
+		}
+		if($status == 1){
+			print "\r                 \r";
+			return $r["request"];
+		}
+		return 0;
+	}
+}
+public function HcType1($url,$apikey, $sitekey, $pageurl){
+	$r =  json_decode(file_get_contents($url."in.php?key=".$apikey."&method=hcaptcha&googlekey=".$sitekey."&pageurl=".$pageurl."&json=1"),1);
+	$status = $r["status"];
+	//print_r(b.$r.p);
+	if($status == 0){
+		print(b."Apikey: ".m.$r["request"].n);
+		return 0;
+	}
+	$id = $r["request"];
+	while(true){
+		print "prosess...";
+		$r = json_decode(file_get_contents($url."res.php?key=".$apikey."&action=get&id=".$id."&json=1"),1);
+		//print_r($r);
+		$status = $r["status"];
+		if($r["request"] == "CAPCHA_NOT_READY"){
+			echo "\r                      \r";
+			print "prosess......";
+			sleep(10);
+			print "\r                    \r";
+			//print(m.$r["request"].n);
+			continue;
+		}
+		if($status == 1){
+			print "\r                 \r";
+			return $r["request"];
+		}
+		return 0;
+	}
+}
+public function BalType1($url, $apikey, $cc){
+	$x = json_decode(file_get_contents($url."res.php?action=userinfo&key=".$apikey),1);
+	if(!$x["balance"]){
+		exit("Apikey: ".m."Saldo Apikey habis!".n);
+	}
+	return $x["balance"]." $cc";
+}
+
+#TYPE 2
+public function OcrType2($url, $apikey, $img){
+	preg_match('@^(?:https://)?([^/]+)@i',$url,$host);
+	$ua="Host: ".$host[1]."\n"."Content-Type: application/json\n";
+	$data=json_encode(array("clientKey"=>$apikey,"task"=>array("type"=>"ImageToTextTask","body"=>$img)));
+	$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+	$Create=json_decode(file_get_contents($url.'createTask', false, stream_context_create($opts)));
+	if($Create->errorId > 0){
+		print("Apikey: ".m.$Create->errorCode.n);
+		return 0;
+	}
+	$Task=$Create->taskId;
+	while(true){
+		print k."Prosessing...";
+		$base=json_encode(array("clientKey"=>$apikey,"taskId"=>$Task));
+		$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $base]];
+		$Result=json_decode(file_get_contents($url.'getTaskResult', false, stream_context_create($opts)),1);
+		if($Result["status"] =='processing'){
+			echo "\r                   \r";
+			print k."Prosessing....";
+			sleep(5);
+			echo "\r                      \r";
+			continue;
+		}
+		echo "\r             \r";
+		if($Result["solution"]["text"]){
+			return $Result["solution"]["text"];
+		}
+		return 0;
+	}
+}
+public function Rv2Type2($url, $apikey, $sitekey, $pageurl){
+	preg_match('@^(?:https://)?([^/]+)@i',$url,$host);
+	$ua="Host: ".$host[1]."\n"."Content-Type: application/json\n";
+	$data=json_encode(array("clientKey"=>$apikey,"task"=>array("type"=>"RecaptchaV2TaskProxyless","websiteURL"=>$pageurl,"websiteKey"=>$sitekey,"isInvisible"=>false)));
+	$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+	$Create=json_decode(file_get_contents($url.'createTask', false, stream_context_create($opts)));
+	#ERROR
+	if($Create->errorId > 0){
+		print("Apikey: ".m.$Create->errorCode.n);
+		return 0;
+	}
+	$Task=$Create->taskId;
+	while(true){
+		print k."Prosessing...";
+		$base=json_encode(array("clientKey"=>$apikey,"taskId"=>$Task));
+		$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $base]];
+		$Result=json_decode(file_get_contents($url.'getTaskResult', false, stream_context_create($opts)));
+		if($Result->status=='processing'){
+			echo "\r                   \r";
+			print k."Prosessing....";
+			sleep(5);
+			echo "\r                      \r";
+			continue;
+		}
+		echo "\r             \r";
+		if($Result->solution->gRecaptchaResponse){
+			return $Result->solution->gRecaptchaResponse;
+		}
+		return 0;
+	}
+}
+public function HcType2($url, $apikey, $sitekey, $pageurl){
+	preg_match('@^(?:https://)?([^/]+)@i',$url,$host);
+	$ua="Host: ".$host[1]."\n"."Content-Type: application/json\n";
+	$data=json_encode(array("clientKey"=>$apikey,"task"=>array("type"=>"HCaptchaTaskProxyless","websiteURL"=>$pageurl,"websiteKey"=>$sitekey)));
+	$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+	$Create=json_decode(file_get_contents($url.'createTask', false, stream_context_create($opts)));
+	#ERROR
+	if($Create->errorId > 0){
+		print("Apikey: ".m.$Create->errorCode.n);
+		return 0;
+	}
+	$Task=$Create->taskId;
+	while(true){
+		print k."Prosessing...";
+		$base=json_encode(array("clientKey"=>$apikey,"taskId"=>$Task));
+		$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $base]];
+		$Result=json_decode(file_get_contents($url.'getTaskResult', false, stream_context_create($opts)));
+		if($Result->status=='processing'){
+			echo "\r                   \r";
+			print k."Prosessing......";
+			sleep(5);
+			echo "\r                      \r";
+			continue;
+		}
+		echo "\r             \r";
+		if($Result->solution->gRecaptchaResponse){
+			return $Result->solution->gRecaptchaResponse;
+		}
+		return 0;
+	}
+}
+public function BalType2($url, $apikey, $cc){
+	preg_match('@^(?:https://)?([^/]+)@i',$url,$host);
+	$ua="Host: ".$host[1]."\n"."Content-Type: application/json\n";
+	$data = json_encode(array("clientKey"=>$apikey));
+	$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+	$r = json_decode(file_get_contents($url.'getBalance', false, stream_context_create($opts)),1);
+	if($r["errorId"] > 0){
+		exit("Apikey: ".m.$r["errorCode"].n);
+	}
+	return $r["balance"]." $cc";
+}
+
+#TYPE 3
+public function OcrType3($url, $apikey, $img){
+	preg_match('@^(?:https://)?([^/]+)@i',$url,$host);
+	$ua="Host: ".$host[1]."\n"."Content-Type: application/json\n";
+	$data=json_encode(array("Apikey"=>$apikey,"Type"=>"imagetotext","Image"=>$img,"Math"=>false));
+	$opts = ['http' =>['method'  => 'POST','header' => $ua,'content' => $data]];
+	$r=json_decode(file_get_contents($url.'Recognition?affiliateid=33138', false, stream_context_create($opts)),1);
+	if($r["Code"] > 0){
+		print("Apikey: ".m.$r["Message"].n);
+		return 0;
+	}
+	$id = $Create["TaskId"];
+	while(true){
+		print k."Prosessing...";
+		$r = json_decode(file_get_contents($url."getresult?apikey=".$apikey."&taskid=".$id),1);
+		if($r["Status"] == "SUCCESS"){
+			echo "\r                        \r";
+			return $r["Data"];
+		}
+		#error
+		if($r["Status"] == "ERROR"){
+			echo "\r                      \r";
+			return 0;
+		}
+		echo "\r                      \r";
+		print k."Prosessing......";
+		sleep(10);
+		echo "\r                      \r";
+	}
+}
+public function Rv2Type3($url, $apikey, $sitekey, $pageurl){
+	$r = json_decode(file_get_contents($url."recaptchav2?apikey=".$apikey."&sitekey=".$sitekey."&siteurl=".urlencode($pageurl)."&invisible=false&affiliateid=33138"),1);
+	if($r["Code"] > 0){
+		print("Apikey: ".m.$r["Message"].n);
+		return 0;
+	}
+	$id = $r["TaskId"];
+	while(true){
+		print k."Prosessing...";
+		$r = json_decode(file_get_contents($url."getresult?apikey=".$apikey."&taskid=".$id),1);
+		if($r["Status"] == "SUCCESS"){
+			echo "\r                        \r";
+			return $r["Data"]["Token"];
+		}
+		if($r["Status"] == "ERROR"){
+			echo "\r                      \r";
+			return 0;
+		}
+		echo "\r                      \r";
+		print k."Prosessing......";
+		sleep(10);
+		echo "\r                      \r";
+	}
+}
+public function HcType3($url, $apikey, $sitekey, $pageurl){
+	$r = json_decode(file_get_contents($url."hcaptcha?apikey=".$apikey."&sitekey=".$sitekey."&siteurl=".urlencode($pageurl)."&affiliateid=33138"),1);
+	if($r["Code"] > 0){
+		print(m.$r["Message"].n);
+		return 0;
+	}
+	$id = $r["TaskId"];
+	while(true){
+		print k."Prosessing...";
+		$r = json_decode(file_get_contents($url."getresult?apikey=".$apikey."&taskid=".$id),1);
+		if($r["Status"] == "SUCCESS"){
+			echo "\r                        \r";
+			return $r["Data"]["Token"];
+		}
+		if($r["Status"] == "ERROR"){
+			echo "\r                      \r";
+			return 0;
+		}
+		echo "\r                      \r";
+		print k."Prosessing......";
+		sleep(10);
+		echo "\r                      \r";
+	}
+}
+public function BalType3($url, $apikey, $cc){
+	$r = json_decode(file_get_contents($url."user/balance?apikey=".$apikey),1);
+	if($r["Code"] > 0){
+		exit("Apikey: ".m.$r["Message"].n);
+		return 0;
+	}
+	return $r["Balance"]." $cc";
+}
+
+#captcha
+public function Recaptchav2($sitekey, $pageurl){$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];
+	if($type == 1){return $this->Rv2Type1($url, $apikey, $sitekey, $pageurl);
+	}elseif($type == 2){return $this->Rv2Type2($url, $apikey, $sitekey, $pageurl);
+	}elseif($type == 3){return $this->Rv2Type3($url, $apikey, $sitekey, $pageurl);
+	}else{return 0;
+	}
+}
+public function Hcaptcha($sitekey, $pageurl){$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];
+	if($type == 1){return $this->HcType1($url,$apikey, $sitekey, $pageurl);
+	}elseif($type == 2){return $this->HcType2($url, $apikey, $sitekey, $pageurl);
+	}elseif($type == 3){return $this->HcType3($url, $apikey, $sitekey, $pageurl);
+	}else{return 0;
+	}
+}
+public function Ocr($img){
+	$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];
+	if($type == 1){
+		$post = "http://goodxevilpay.pp.ua/";
+		if($url == $post){
+			return $this->OcrType1($url, $apikey, $img,1);
+		}else{
+			return $this->OcrType1($url, $apikey, $img);
+		}
+	}elseif($type == 2){return $this->OcrType2($url, $apikey, $img);
+	}elseif($type == 3){return $this->OcrType3($url, $apikey, $img);
+	}else{return 0;
+	}
+}
+public function Cf($sitekey, $pageurl){$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];
+	if($type == 1){return $this->CfType1($url,$apikey, $sitekey, $pageurl);
+	}elseif($type == 2){return 0;
+	}elseif($type == 3){return 0;
+	}else{return 0;
+	}
+}
+public function Atb($source){$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];
+	if($type == 1){
+	$post = "http://api.multibot.in/";
+	if($url == $post){}else{
+	exit(m."Antibotlinks hanya support Apikey multibot!\n");
+	}
+	return $this->AtbType1($url, $apikey, $source);
+	}elseif($type == 2){exit(m."Antibotlinks hanya support Apikey multibot!\n");
+	}elseif($type == 3){exit(m."Antibotlinks hanya support Apikey multibot!\n");
+	}else{return 0;
+	}
+}
+#balance
+public function Api_Bal(){$api = json_decode(file_get_contents("Apikey"),1);$type = $api["type"];$url = $api["url"];$apikey = $api["apikey"];$cc = $api["cc"];
+	if($type == 1){return $this->BalType1($url, $apikey,$cc);
+	}elseif($type == 2){return $this->BalType2($url, $apikey,$cc);
+	}elseif($type == 3){return $this->BalType3($url, $apikey,$cc);
+	}else{return 0;
+	}
+}
+}
