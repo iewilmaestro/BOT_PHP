@@ -1,0 +1,197 @@
+class AutoFaucetCookie extends ApiBypass {
+	public function Bahan(){
+		$this->simpan("Cookie");
+		$this->simpan("User_Agent");
+		
+		print $this->slow(p."Jangan lupa \033[101m\033[1;37m Subscribe! \033[0m youtub saya :D");sleep(2);
+		system("termux-open-url ".youtube);
+		$this->Bn();
+	}
+	public function Headers(){
+		$h[] = "user-agent: ".$this->simpan("User_Agent");
+		$h[] = "cookie: ".$this->simpan("Cookie");
+		return $h;
+	}
+	public function Dashboard(){
+		$r = $this->curl(host."dashboard",$this->Headers(),'',1)[1];
+		$data["user"] = explode('</b>',explode('<span id="greeting"></span> <b>',$r)[1])[0];
+		$data["bal"] = explode(' USD</b>',explode('<b>Account Balance: ',$r)[1])[0];
+		$data["min"] = explode('"',explode('name="amount" min="',$r)[1])[0];
+		$data["address"] = explode('">',explode('placeholder="Connect Your FaucetPay Email" value="',$r)[1])[0];
+		$data["csrf"] = explode('">',explode('<input type="hidden" name="csrf_token_name" id="token" value="',$r)[1])[0];
+		$data["token"] = explode('">',explode('<input type="hidden" name="token" value="',$r)[1])[0];
+		$data["coin"] = explode('"',explode('value="',explode('<input class="form-check-input" type="radio" name="currency"',$r)[1])[1])[0];
+		return $data;
+	}
+	public function InputEmail($csrf, $token){
+		$wallet = readline(mp."Input email fp".d.k." : ".h.n);
+		$data = "csrf_token_name=".$csrf."&token=".$token."&wallet=".str_replace('@','%40',$wallet);
+		$r = $this->curl(host."dashboard/authorize",$this->Headers(),$data,1)[1];
+		$ss = explode("'",explode("html: '",$r)[1])[0];
+		if($ss){
+			print h.$ss.n;
+			print $this->line();
+		}else{
+			exit(m."Input Email Withdraw!".n);
+		}
+	}
+	public function Withdraw($csrf, $token, $bal, $coin){
+		$data = "csrf_token_name=".$csrf."&token=".$token."&amount=".substr($bal,0,6)."&currency=".$coin;
+		$r = $this->curl(host."withdraw",$this->Headers(),$data,1)[1];
+		$ss = explode("account!'",explode("html: '0.",$r)[1])[0];
+		if($ss){
+			print h."0.".$ss.n;
+			print $this->line();
+		}
+	}
+	public function Coins(){
+		$r = $this->curl(host,$this->Headers(),'',1)[1];
+		$con = explode('/auto/currency/',$r);
+		foreach($con as $a => $coins){
+			if($a == 0)continue;
+			$coin = explode('"',$coins)[0];
+			$data[$a] = $coin;
+		}
+		return $data;
+	}
+	public function Autofaucet($coin){
+		return $this->curl(host."auto/currency/".$coin,$this->Headers(),'',1)[1];
+	}
+	public function VerifAutofaucet($token, $coin){
+		$data = "token=".$token;
+		return $this->curl(host."auto/verify/".$coin,$this->Headers(),$data,1)[1];
+	}
+	public function ManualFaucet($coin){
+		return $this->curl(host."faucet/currency/".$coin,$this->Headers(),'',1)[1];
+	}
+	public function VerifManualFaucet($csrf, $token, $cap, $coin){
+		$data = "csrf_token_name=".$csrf."&token=".$token."&captcha=hcaptcha&g-recaptcha-response=".$cap."&h-captcha-response=".$cap;
+		return $this->curl(host."faucet/verify/".$coin,$this->Headers(),$data,1)[1];
+	}
+	public function Firewall(){
+		$r = $this->curl(host."firewall",$this->Headers(),'',1)[1];
+		$csrf = explode('"',explode('name="csrf_token_name" value="',$r)[1])[0];
+		$tipe = explode('"',explode('<input type="hidden" name="captchaType" value="',$r)[1])[0];
+		if($tipe == "recaptchav2"){
+			$sitekey = explode('">',explode('<div class="g-recaptcha" data-sitekey="',$r)[1])[0];
+			$cap = $this->recaptchav2($sitekey, host."firewall");
+			$data = "g-recaptcha-response=$cap&captchaType=recaptchav2&csrf_token_name=".$csrf;
+			return $this->curl(host."firewall/verify",$this->Headers(),$data,1);
+		}
+	}
+	public function Run_Autofaucet(){
+		while(true){
+			$coins = $this->Coins();
+			foreach($coins as $coin){
+				$r = $this->Autofaucet($coin);
+				if(preg_match('/An uncaught Exception was encountered/',$r)){print m."An uncaught Exception was encountered\n";sleep(2);print "\r                                 \r";$this->tmr(60);continue;}
+				if(preg_match('/Please confirm your email address to be able to claim or withdraw/',$r)){print m."Please confirm your email address to be able to claim or withdraw\n";print $this->line();exit;}
+				if($res){if($res[$coin] > 2)continue;}
+				if(preg_match("/You don't have enough energy for Auto Faucet!/",$r)){exit(m."You don't have enough energy for Auto Faucet!\n");}
+				if(preg_match('/Daily claim limit/',$r)){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Daily claim limit\n";continue;}
+				$status_bal = explode('</span>',explode('<span class="badge badge-danger">',$r)[1])[0];
+				if($status_bal == "Empty"){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Sufficient funds\n";continue;}
+				$tmr = explode(',',explode('let timer = ',$r)[1])[0];
+				if($tmr){$this->tmr($tmr);}
+				$token = explode('">',explode('<input type="hidden" name="token" value="',$r)[1])[0];
+				if(!$token) {
+					unlink("Cookie");
+					unlink("cookie.txt");
+					return 0;
+				}
+				$r = $this->VerifAutofaucet($token, $coin);
+				$ss = explode("account!'",explode("html: '0.",$r)[1])[0];
+				$wr = explode("'",explode("html: '",$r)[1])[0];
+				$ban = explode('</div>',explode('<div class="alert text-center alert-danger"><i class="fas fa-exclamation-circle"></i> Your account',$r)[1])[0];
+				if(preg_match('/sufficient funds/',$r)){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Sufficient funds\n";
+					continue;
+				}
+				if($ban){
+					print "\r                      \r";
+					exit(m."Your account".$ban.n);
+				}
+				if($ss){
+					print h."0.".$ss.n;
+					$res = $this->his([$coin=>1],$res);
+				}
+				if($wr){
+					$res = $this->his([$coin=>1],$res);
+				}
+			}
+			if(!$res){
+				exit(m."Error: Res hilang!".n);
+			}
+			if(min($res) > 2)break;
+		}
+		print $this->Line();
+		return 1;
+	}
+	public function Run_ManualFaucet(){
+		while(true){
+			$coins = $this->Coins();
+			foreach($coins as $coin){
+				$r = $this->ManualFaucet($coin);
+				if(preg_match('/An uncaught Exception was encountered/',$r)){print m."An uncaught Exception was encountered\n";sleep(2);print "\r                                 \r";$this->tmr(60);continue;}
+				if(preg_match('/Please confirm your email address to be able to claim or withdraw/',$r)){print m."Please confirm your email address to be able to claim or withdraw\n";print $this->line();exit;}
+				if($res){if($res[$coin] > 2)continue;}
+				if(preg_match('/Daily claim limit/',$r)){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Daily claim limit\n";continue;}
+				if(preg_match('/Firewall/',$r)){
+					$this->Firewall();
+					continue;
+				}
+				$status_bal = explode('</span>',explode('<span class="badge badge-danger">',$r)[1])[0];
+				if($status_bal == "Empty"){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Sufficient funds\n";continue;}
+				$csrf = explode('">',explode('<input type="hidden" name="csrf_token_name" id="token" value="',$r)[1])[0];
+				$tmr = explode("-",explode('var wait = ',$r)[1])[0];
+				if($tmr){
+					$this->tmr(10);
+					$res = $this->his([$coin=>1],$res);
+					continue;
+				}
+				$token = explode('">',explode('<input type="hidden" name="token" value="',$r)[1])[0];
+				$sitekey = explode('"',explode('class="h-captcha" data-sitekey="',$r)[1])[0];
+				if(!$sitekey){
+					exit(m."Captcha ganti\n");
+				}
+				$cap = $this->hcaptcha($sitekey, host."faucet/currency/".$coin);
+				if(!$cap)continue;
+				$data = "csrf_token_name=".$csrf."&token=".$token."&captcha=hcaptcha&g-recaptcha-response=".$cap."&h-captcha-response=".$cap;
+				$r = $this->VerifManualFaucet($csrf, $token, $cap, $coin);
+				$ss = explode("account!'",explode("html: '0.",$r)[1])[0];
+				$wr = explode("'",explode("html: '",$r)[1])[0];
+				$ban = explode('</div>',explode('<div class="alert text-center alert-danger"><i class="fas fa-exclamation-circle"></i> Your account',$r)[1])[0];
+				if(preg_match('/sufficient funds/',$r)){
+					$res = $this->his([$coin=>3],$res);
+					print c.$coin.p." : ".m."Sufficient funds\n";
+					continue;
+				}
+				if($ban){
+					print "\r                      \r";
+					exit(m."Your account".$ban.n);
+				}
+				if($ss){
+					print h."0.".$ss.n;
+					$res = $this->his([$coin=>1],$res);
+				}
+				if($wr){
+					$res = $this->his([$coin=>1],$res);
+				}
+			}
+			if(!$res){
+				exit(m."Error: Res hilang!".n);
+			}
+			if(min($res) > 2)break;
+		}
+		return 1;
+	}
+}
