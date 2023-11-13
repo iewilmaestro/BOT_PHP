@@ -7,6 +7,9 @@ class ApiBypass extends Modul {
 			file_put_contents($data,json_encode($arr,JSON_PRETTY_PRINT));
 	}
 	public function menu_api($file){
+if(file_exists("Apikey")){
+return 0;
+}
 		menu_bypass_provider:
 		print p."1. ".k."OcrCaptchaAi\n";
 		print p."2. ".k."GoodXevil\n";
