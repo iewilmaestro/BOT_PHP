@@ -135,7 +135,7 @@ return 0;
 			}
 			if($status == 1){
 				print "\r                 \r";
-				return $r["request"];
+				return "+".str_replace(',','+',$r["request"]);
 			}
 			return 0;
 		}
