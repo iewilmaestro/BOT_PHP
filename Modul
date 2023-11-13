@@ -143,4 +143,11 @@ class Modul {
 		}
 		return array_merge($data,$newdata);
 	}
+	public function Uagent(){
+	$url = "https://raw.githubusercontent.com/iewilmaestro/GudangDuit/main/ua.txt";
+	$url = file_get_contents($url);
+	preg_match_all("/(\s.*)/i",$url,$ua);
+	$arr = array_filter($ua[1],'strlen');
+	return trim($arr[array_rand($arr)]);
+	}
 }
